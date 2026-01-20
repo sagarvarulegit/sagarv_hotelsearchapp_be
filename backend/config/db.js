@@ -4,16 +4,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+let poolConfig;
 
-const pool = new Pool({
-    connectionString: connectionString,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
-
-if (!connectionString) {
-    // Fallback for local development if NO connection string is set
-    pool.options = {
+if (process.env.POSTGRES_URL || process.env.DATABASE_URL) {
+    // Production / Vercel Configuration
+    poolConfig = {
+        connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    };
+} else {
+    // Local Development Configuration
+    poolConfig = {
         user: process.env.DB_USER || 'postgres',
         host: process.env.DB_HOST || 'localhost',
         database: process.env.DB_NAME || 'hotel_search_db',
@@ -21,5 +22,7 @@ if (!connectionString) {
         port: process.env.DB_PORT || 5432,
     };
 }
+
+const pool = new Pool(poolConfig);
 
 export default pool;
