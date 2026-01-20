@@ -4,13 +4,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+
 const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
+    connectionString: connectionString,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
-if (!process.env.POSTGRES_URL) {
-    // Fallback for local development if POSTGRES_URL is not set
+if (!connectionString) {
+    // Fallback for local development if NO connection string is set
     pool.options = {
         user: process.env.DB_USER || 'postgres',
         host: process.env.DB_HOST || 'localhost',
