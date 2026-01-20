@@ -6,14 +6,16 @@ dotenv.config();
 
 let poolConfig;
 
+// PRIORITIZE Cloud Config
 if (process.env.POSTGRES_URL || process.env.DATABASE_URL) {
-    // Production / Vercel Configuration
+    console.log('Using Cloud Database Configuration');
     poolConfig = {
         connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL,
         ssl: { rejectUnauthorized: false }
     };
 } else {
     // Local Development Configuration
+    console.log('Using Local Database Configuration');
     poolConfig = {
         user: process.env.DB_USER || 'postgres',
         host: process.env.DB_HOST || 'localhost',
