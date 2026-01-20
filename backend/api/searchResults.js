@@ -5,6 +5,10 @@
  *     Hotel:
  *       type: object
  *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier for the hotel
+ *           example: "NewYork_1"
  *         name:
  *           type: string
  *           description: The name of the hotel
@@ -100,20 +104,32 @@ const sample_images = [
  */
 const searchHotels = (req, res) => {
   const { city, from_date, to_date } = req.query;
-  
+
   if (!city) {
     return res.status(400).json({ error: 'City parameter is required' });
   }
-  
+
   const hotels = HOTELS[city] || [];
-  const results = hotels.map((hotelName, index) => ({
-    name: hotelName,
-    city,
-    available_from: from_date || null,
-    available_to: to_date || null,
-    image_url: sample_images[index % sample_images.length]
-  }));
-  
+
+  // Find city index for ID generation
+  const cityIndex = Object.keys(HOTELS).indexOf(city);
+
+  const results = hotels.map((hotelName, index) => {
+    // ID Formula: 1000 + (CityIndex * 100) + HotelIndex + 1
+    // e.g. City 0, Hotel 0 -> 1001
+    // e.g. City 1, Hotel 0 -> 1101
+    const id = 1000 + (cityIndex * 100) + (index + 1);
+
+    return {
+      id: String(id),
+      name: hotelName,
+      city,
+      available_from: from_date || null,
+      available_to: to_date || null,
+      image_url: sample_images[index % sample_images.length]
+    };
+  });
+
   res.setHeader('Content-Type', 'application/json');
   res.status(200).json(results);
 };

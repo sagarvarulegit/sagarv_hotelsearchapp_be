@@ -12,8 +12,13 @@ const { specs, swaggerUi } = require('../config/swagger.cjs');
 // Import route handlers
 import destination from './destination.js';
 import searchResults from './searchResults.js';
+import hotelDetails from './hotelDetails.js';
+import bookHotel from './bookHotel.js';
+import fetchBookings from './fetchBookings.js';
+
 
 const app = express();
+app.use(express.json()); // Enable JSON body parsing
 
 // Serve Swagger UI at /api-docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
@@ -22,8 +27,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true })
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Request-Method', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
-  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 
@@ -34,6 +39,18 @@ app.get('/api/destination', (req, res) => {
 
 app.get('/api/searchResults', (req, res) => {
   searchResults(req, res);
+});
+
+app.get('/api/hotelDetails', (req, res) => {
+  hotelDetails(req, res);
+});
+
+app.post('/api/bookHotel', (req, res) => {
+  bookHotel(req, res);
+});
+
+app.get('/api/fetch_bookings', (req, res) => {
+  fetchBookings(req, res);
 });
 
 // 404 handler
