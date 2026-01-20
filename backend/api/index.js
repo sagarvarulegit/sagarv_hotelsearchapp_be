@@ -14,6 +14,8 @@ import destination from './destination.js';
 import searchResults from './searchResults.js';
 import hotelDetails from './hotelDetails.js';
 import bookHotel from './bookHotel.js';
+import fetchBookings from './fetchBookings.js';
+
 
 const app = express();
 app.use(express.json()); // Enable JSON body parsing
@@ -45,6 +47,10 @@ app.get('/api/hotelDetails', (req, res) => {
 
 app.post('/api/bookHotel', (req, res) => {
   bookHotel(req, res);
+});
+
+app.get('/api/fetch_bookings', (req, res) => {
+  fetchBookings(req, res);
 });
 
 // 404 handler
